@@ -1,0 +1,464 @@
+time log and meeting log
+
+
+*08.30 to 08.40 - Morning Discussion K2and
+
+08.40 to 10.40 - 102839 - Prevent submit on Enter key press on detail screen
+	■ Account Add Screen onkeyPress bug fixed
+10.40 to 11.40 -102839 - Prevent submit on Enter key press on detail screen
+	app add screen same problem
+	event add screen
+	filter add screen	
+
+11.40 to 01.30 - Filter builder component enter click to not submit form filter add
+------- 5h50m
+02.00 to 03.30 Filter builder component enter click to not submit form filter add
+--------1h30m
+*03.30 to 04.00 -Talk with Nur vai and try to help drag app work 
+-------
+04.00 to 05.30 - 102888 - Bug fix - event delete modal not launching 
+
+
+Update:
+
+Today's progress
+■ 102839 - Prevent submit on Enter key press on detail screen
+	■ Account Add Screen onkeyPress bug fixed
+	■ Revert the onKeyPress
+○ Prevent submit on Enter key press filter add screen
+	○ Try to find the way 
+	○ Two way tried to solve
+	○ Investigate problem	 	
+■ 102888 - Bug fix - event delete modal not launching 
+	■ Modal is opening
+
+□　Not started
+▷ Pending
+○　Doing
+■　Done
+
+
+
+
+
+Task assign
+#102839 - Prevent submit on Enter key press on detail screen
+#102888 - Bug fix - event delete modal not launching 
+
+
+
+ Try creating a new account first. (example)
+1 : Enter your account ID
+2 : Press Enter key
+The behavior is the same as pressing the add button / create new button.
+
+Please do not respond when you press the enter key.
+
+Please implement it from the new account creation screen.
+
+
+????????????????????????????????????????????????????????????????
+
+						onOptionChanged={(e) => {
+							console.log("e", e);
+							e.element.onkeydown((s) => {
+								console.log("onkeyDown function run");
+								s.which === 13 && s.preventDefault()
+							})
+							// console.log("Before condition if", e.element.onkeydown);
+							// if (e.element.onkeydown == 'Enter') {
+							// 	console.log("Clicked enter");
+							// } else {
+							// 	console.log("Not clicked enter");
+							// }
+							// var elementDom = e.element
+							// console.log("OnOption Change", elementDom);
+						}}
+						// onEnterKey={(e) => {
+						// 	console.log("Hello Im enter key");
+						// }}
+						onEditorPreparing={(e) => {
+							e.editorOptions.width = "800px";
+							// console.log("Editor option set", e)
+							// onKeyPress = { e => {e.which === 13 && e.preventDefault()}}
+						}}
+????????????????????????????????????????????????????????????????
+
+
+
+
+import React, { useEffect, useState } from "react";
+import Page1440Body from "../Page1440/Page1440Body";
+import { Form, Formik, useFormikContext } from "formik";
+import FormBodyContainer from "../Wrapper/FormBodyContainer";
+import InputContainer from "../Wrapper/InputContainer";
+import TextBox from "./FormInputs/TextBox";
+import Label from "./FormInputs/Label";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import FormFooter from "./FormFooter";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { baseURL, createMethod, updateMethod, deleteMethod, createFilter, updateFilter, deleteFilter } from "../../restapi/queries";
+import axios from "axios";
+import Loading from "../Loading/Loader";
+import { filterFormSchema } from "../../lib/Schema";
+import { errorMessages } from "../../lib/errorMessages";
+import DialogModal from "../Modal/DialogModal"
+import DxFilterBuilder from "../DxFilterBuilder/DxFilterBuilder";
+import { instance } from "../../services/axios.js"
+
+
+
+// formik onChange function will show everything in form
+const FormObserver = ({ setFormSubmit }) => {
+    const { values } = useFormikContext();
+    useEffect(() => {
+        // const { limitType } = values
+        // console.log("Values", values);
+        setFormSubmit(values)
+        // setTagShow && setTagShow(limitType === "1" || limitType == 1)
+    }, [values]);
+
+    return null;
+};
+
+
+// Filter Screen Main Form
+//FIXME: What is error2 used for?
+const FilterForm = ({ initialValues, formType, load, error, setIsOverFlow }) => {
+    // screen transition navigate
+    const navigate = useNavigate()
+    // Auth info held in Redux
+    const { info } = useSelector((state) => state.auth)
+    const pathname = window.location.pathname;
+    const routeName2 = pathname.split("/").pop();
+
+    //TODO: Remove if not used
+    // const { projectInfo } = useSelector((state) => state.projectList)
+
+    // used for state management
+    const [loading, setLoading] = useState(false)
+    const [openModal, setOpenModal] = useState(false)
+    const [continuousAdd, setContinuousAdd] = useState(false)
+    const [top, setTop] = useState(false)
+    const [systemError, setSystemError] = useState(false)
+    const [deleteError, setDeleteError] = useState(false)
+    const [selectConditionType, setConditionType] = useState(true)
+
+    //TODO: Remove if not used
+    const [deleteLoading, setDeleteLoading] = useState(false)
+
+    // FORM:  submition state
+    const [formSubmit, setFormSubmit] = useState(true)
+    // const [fromObserve]
+    // if submit type is continuous add, page will be scroll to top
+    useEffect(() => {
+        //FIXME: An error occurs when the element is not found when the edit screen is displayed
+        document.getElementById('scroller').scrollIntoView({ top: '0', behavior: 'smooth' })
+    }, [top])
+
+    useEffect(() => {
+        console.log("initialValues ", initialValues);
+        if (initialValues?.filterQuery) {
+            const filterQueryInSessionStorage = JSON.parse(sessionStorage.getItem(`${routeName2}_timestamp_filterBuilder`))
+            filterQueryInSessionStorage.values = initialValues?.filterQuery
+            sessionStorage.setItem(`${routeName2}_timestamp_filterBuilder`, JSON.stringify(filterQueryInSessionStorage))
+        }
+    }, [sessionStorage])
+
+
+    // cancel operation
+    const handleCancel = () => {
+        navigate('/filter_list')
+    }
+
+
+
+    // create operation
+    const handleAdd = async (values, resetForm) => {
+        console.log("Handle add filter add form");
+        setLoading(true)
+        setSystemError(false)
+        let filterQueryValues = [];
+        try {
+            const filterQueryInSessionStorage = JSON.parse(sessionStorage.getItem(`${routeName2}_timestamp_filterBuilder`))
+            if (filterQueryInSessionStorage) {
+                console.log("Local fieldStyleInLocal", filterQueryInSessionStorage);
+                // fieldStyleInLocalStorage Control object from here in future make it dynamic obj for unnessary data
+                filterQueryValues = [...filterQueryInSessionStorage?.values]
+            }
+        } catch (error) {
+            console.log("filterQueryInSessionStorage", error);
+        }
+        try {
+            const ENDPOINT = `${baseURL}${createFilter}`
+            const config = {
+                method: createMethod,
+                url: ENDPOINT,
+                data: {
+                    projectId: sessionStorage.getItem('currentProjectId'),
+                    filterName: values.filterName.trim(),
+                    filterOverview: values.filterOverview,
+                    //FIXME: Implement after completing the filter builder
+                    filterQuery: filterQueryValues,
+                    memo: values.memo,
+                    createdBy: info.accountId,
+                    updatedBy: info.accountId
+                },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            }
+            const created = await instance.request(config)
+
+            // if create is successful
+            if (created) {
+                // console.log(created)
+                setSystemError(false)
+                setLoading(false)
+            }
+            // if submit type is not continuous
+            if (!continuousAdd) {
+                return navigate('/filter_list')
+            }
+            // if submit type is continuous
+            else {
+                resetForm({ [values]: '' })
+                setTop((prev) => !prev)
+            }
+        } catch (error) {
+            console.log('SYSTEM ERROR', error)
+            setSystemError(true)
+            setLoading(false)
+        }
+    }
+
+    // update operation
+    const handleUpdate = async (values) => {
+        setLoading(true)
+        setSystemError(false)
+        let filterQueryValues = [];
+        // console.log("@@@@@@@@@@@@@@@@@ "  + `${routeName2}_timestamp_filterBuilder`);
+        const filterQueryInSessionStorage = JSON.parse(sessionStorage.getItem(`${routeName2}_timestamp_filterBuilder`))
+        if (filterQueryInSessionStorage) {
+            console.log("Local fieldStyleInLocal", filterQueryInSessionStorage);
+            // fieldStyleInLocalStorage Control object from here in future make it dynamic obj for unnessary data
+            filterQueryValues = [...filterQueryInSessionStorage?.values]
+        }
+        try {
+            const ENDPOINT = `${baseURL}${updateFilter}${values.filterId}`
+            const config = {
+                method: updateMethod,
+                url: ENDPOINT,
+                data: {
+                    projectId: sessionStorage.getItem('currentProjectId'),
+                    filterName: values.filterName.trim(),
+                    filterOverview: values.filterOverview,
+                    //FIXME: Implement after completing the filter builder
+                    filterQuery: filterQueryValues,
+                    memo: values.memo,
+                    updatedBy: info.accountId
+                },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            }
+            const updated = await instance.request(config)
+
+            // if update is successful
+            if (updated) {
+                // console.log(update)
+                setSystemError(false)
+                setLoading(false)
+                navigate('/filter_list')
+            }
+        } catch (error) {
+            console.log('SYSTEM ERROR', error)
+            setSystemError(true)
+            setLoading(false)
+        }
+    }
+
+    // delete operation
+    const handleDelete = async (values) => {
+        setLoading(true)
+        const ENDPOINT = `${baseURL}${deleteFilter}${values.filterId}`
+        try {
+            const deleted = await axios.delete(ENDPOINT)
+
+            if (deleted) {
+                // console.log(deleted)
+                setDeleteError(false)
+                setLoading(false)
+                navigate('/filter_list')
+            }
+        } catch (error) {
+            console.log('SYSTEM ERROR', error)
+            setDeleteError(true)
+            setLoading(false)
+        }
+    }
+
+    const closeDialogModal = () => {
+        setOpenModal(false)
+        setIsOverFlow(false)
+    }
+
+
+    // submit form disbale
+    function onKeyDown(keyEvent) {
+        if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+            keyEvent.preventDefault();
+            console.log("Submit from disbale all input field");
+        }
+        // setFormSubmit(true)
+    }
+    return (
+        <>
+            {/* A loader to display on the surface of the screen */}
+            {loading && <Loading />}
+            {/* TODO: I don't understand how it works. */}
+            {/* {load || !Object.keys(initialValues).length || deleteLoading ? ( */}
+            {/* {load || !Object.keys(initialValues).length ? ( */}
+            {load ? (
+                <Loading />
+            ) : (
+                <Page1440Body className='page1440-body3 h-[calc(100vh-134px)] p-0'>
+                    <Formik
+                        validateOnChange={false}
+                        validateOnBlur={false}
+                        initialValues={initialValues}
+                        validationSchema={filterFormSchema(formType)}
+                        onSubmit={(values, { setSubmitting, resetForm }) => {
+                            if (formType === 'add') {
+                                handleAdd(values, resetForm)
+                            } else {
+                                handleUpdate(values, { setSubmitting })
+                            }
+                        }}>
+                        {({ errors }) => {
+                            const first = Object.keys(errors)[0]
+                            return (
+                                <div className='relative w-full h-full'>
+                                    <Form
+                                        // onKeyDown={formSubmit ? onKeyDown : console.log("FromSubmit", formSubmit)}
+                                        onKeyDown={(e) => onKeyDown(e)}
+                                    >
+                                        <FormObserver setFormSubmit={setFormSubmit} />
+                                        <div className='-mt-4' id='scroller'></div>
+                                        <FormBodyContainer>
+                                            <InputContainer>
+                                                <TextBox
+                                                    label='フィルター名（32文字まで）'
+                                                    labelClassName='text-blue-100'
+                                                    inputClassName='bg-blue-25'
+                                                    name='filterName'
+                                                    maxLength="32"
+                                                    onKeyDown={e => {
+                                                        if (e.which === 13) {
+                                                            console.log("Submit the from make false", formSubmit);
+                                                            handleAdd(formSubmit)
+                                                            // onSubmit()
+                                                        }
+                                                    }}
+                                                />
+                                            </InputContainer>
+                                            <InputContainer>
+                                                <TextBox
+                                                    label='フィルター説明（改行不可128文字）'
+                                                    labelClassName='text-blue-100'
+                                                    inputClassName='bg-blue-25'
+                                                    name='filterOverview'
+                                                    maxLength='128'
+                                                    onKeyDown={e => {
+                                                        if (e.which === 13) {
+                                                            console.log("Submit the from make false", formSubmit);
+                                                            handleAdd(formSubmit)
+                                                        }
+                                                    }}
+                                                />
+                                            </InputContainer>
+                                            <InputContainer>
+                                                <Label
+                                                    label='フィルター設定（同一フィールドを複数回条件照合できます）'
+                                                    labelClassName='text-blue-100'
+                                                    name='filterQueryLabel'
+                                                />
+                                            </InputContainer>
+                                            {/* DX FILTER BUILDER START */}
+                                            {
+                                                selectConditionType
+                                                && <InputContainer>
+                                                    <DxFilterBuilder
+                                                        info={{
+                                                            page: `${routeName2}_timestamp_filterBuilder`,
+                                                            maxGroupLevel: 2, fieldQuery: initialValues?.filterQuery
+                                                        }}
+                                                    // onKeyPress={e => { e.which === 13 && e.preventDefault() }}
+                                                    />
+                                                </InputContainer>
+                                            }
+                                            {/* DX FILTER BUILDER END */}
+                                        </FormBodyContainer>
+                                        <FormFooter
+                                            btn_title1={formType === 'add' ? '新規追加' : 'フィルター削除'}
+                                            btn_title2={formType === 'add' ? '連続追加' : '更新'}
+                                            btn_title3='キャンセル'
+                                            btn_title4='複製'
+                                            buttonComponents={true}
+                                            handleCancel={handleCancel}
+                                            formType={formType}
+                                            setContinuousAdd={setContinuousAdd}
+                                            setIsOverFlow={setIsOverFlow}
+                                            setOpenModal={setOpenModal}
+                                            loading={loading}
+                                            deleteLoading={deleteLoading}
+                                        >
+                                            {/* ----error---- */}
+                                            <ErrorMessage className={`${errors[first]} ? "visible" : "invisible"`}>
+
+                                                {systemError && !errors[first] && `${errorMessages.E_SYSTEM_01}`}
+                                            </ErrorMessage>
+                                        </FormFooter>
+                                    </Form>
+                                    {openModal && (
+                                        <DialogModal
+                                            title='削除'
+                                            btn_title='フィルター削除'
+                                            cancel_title='キャンセル '
+                                            handleButtonLeft={handleDelete}
+                                            handleButtonRight={closeDialogModal}
+                                            setIsOverFlow={setIsOverFlow}
+                                            values={initialValues}
+                                            errors={<div className={`${errors[first]} ? "visible" : "invisible"`}>{deleteError && !errors[first] && `${errorMessages.E_SYSTEM_01}`}</div>}
+                                        >
+                                            <div className='text-center mt-[1rem]'>
+                                                <p>選択したデータを削除します。</p>
+                                                <div className='text-orange-500 mt-[1rem]'>削除したデータは復元できません。</div>
+                                            </div>
+                                        </DialogModal>
+                                    )}
+                                </div>
+                            );
+                        }}
+                    </Formik>
+                </Page1440Body>
+            )}
+        </>
+    );
+}
+export default FilterForm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
