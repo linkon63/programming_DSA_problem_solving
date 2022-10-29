@@ -1,3 +1,4 @@
+// Write a C program to take one integer N as input and print from 1 to N.
 #include <stdio.h>
 
 int main(){
