@@ -1,15 +1,21 @@
-
+#include <stdio.h>
 int main()
 {
-    long long int sum,a,b,c,n,t;
-    scanf("%lld",&t);
-    while(t > 0)
+    int n,s,a,b,sub,c,i,j;
+    scanf("%d",&n);
+    if(n>0 && n <= 100)
     {
-        scanf("%lld %lld %lld %lld", &sum,&a,&b,&c);
-        sum = sum - (a+b+c);
-        t--;
+        for( i= 0; i<n; i++)
+        {
+
+            for( j = 0; j<1; j++)
+            {
+                scanf("%d %d %d %d", &s,&a,&b,&c);
+                sub = s - (a+b+c);
+                printf("%d\n", sub);
+            }
+        }
     }
-    printf("%lld", sum);
     return 0;
 }
 /*
