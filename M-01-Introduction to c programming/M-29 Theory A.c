@@ -2,20 +2,185 @@
 #include <string.h>
 #include <math.h>
 
-// Question 7
+int factorial(int x)
+{
+    int f = 1, i;
+    if(x == 0 || x == 1)
+    {
+        ratio(x,1);
+        return 1;
+    }
+    else
+    {
+        for (i = 1; i <= x; i++)
+        {
+            f *= i;
+        }
+        ratio(x,f);
+        return f;
+    }
 
-int medianOfArray(int arr[]){
-    int len = sizeof(arr) / sizeof(arr[0]);
-    if(len % 2 == 0){
-        printf("Array Size is even number:%d \n", len);
+
+}
+
+void ratio(int x, int y)
+{
+    printf("Ratio is %d:%d \n",x,y);
+}
+
+int main()
+{
+    int x;
+    scanf("%d",&x);
+    printf("x:%d\n",x);
+    long long int a = factorial(x);
+    printf("Factorial:%lld \n", a);
+
+    return 0;
+}
+
+/*
+// question 10
+const char* grade(int marks){
+    if(marks>= 80 && marks <=100){
+        return 'A';
+    }else if(marks>= 60 && marks <=89){
+         return 'B';
+    }else if(marks>= 40 && marks <=59){
+         return 'C';
+    }else if(marks>= 0 && marks <=39){
+         return 'F';
     }else{
-        printf("Array Size is odd number:%d \n", len);
+        return 'F';
     }
 }
 int main()
 {
-    int arr[100] = {5,6,9,5,3,6,1,2,9,2};
+    int marks;
+    scanf("%d",&marks);
+    printf("Grade:%c \n",grade(marks));
+    return 0;
+}
+/*
+int main()
+{
+    int mat[3][3], i, j, matTrans[3][3];
+    for(i=0; i<3; i++)
+    {
+        for(j=0; j<3; j++)
+            scanf("%d", &mat[i][j]);
+    }
+    // Transposing the Matrix...
+    for(i=0; i<3; i++)
+    {
+        for(j=0; j<3; j++)
+            matTrans[j][i] = mat[i][j];
+    }
 
+    for(i=0; i<3; i++)
+    {
+        for(j=0; j<3; j++)
+            printf("%d  ", matTrans[i][j]);
+        printf("\n");
+    }
+
+    return 0;
+}
+// question 9
+/*
+
+// question 8
+int main()
+{
+    char s[100];
+    int n;
+    fgets(s,sizeof(s),stdin);
+    scanf("%d",&n);
+    int i;
+    for(i = 0; i < strlen(s)-1; i++)
+    {
+        if(s[i] == 'y')
+        {
+            printf("%c",s[i]-21);
+        }else{
+            printf("%c",s[i]+n);
+        }
+    }
+    return 0;
+}
+
+/*
+// Question 7
+
+int medianOfArray(int len,int arr[])
+{
+
+    if(len % 2 == 0)
+    {
+        //printf("Array Size is even number:%d \n", len);
+        int *sortArr = bubbleSort(arr,len);
+        float prv = sortArr[(len/2) - 1];
+        float mid = sortArr[len/2];
+        float midValue = ( prv+mid ) / 2;
+        printArray(sortArr,len);
+        //printf("Mid prv Value:%2f\n", prv);
+        //printf("Mid mid Value:%2f\n", mid);
+        printf("Mid Value:%2f\n", midValue);
+    }
+    else
+    {
+        //printf("Array Size is odd number:%d \n", len);
+        int *sortArr = bubbleSort(arr,len);
+        printArray(sortArr,len);
+        int index = len/2;
+        //printf("Mid index:%d\n", index);
+        printf("Mid Value:%d\n", sortArr[index]);
+    }
+}
+
+// perform the bubble sort
+int bubbleSort(int array[], int size)
+{
+
+    // loop to access each array element
+    for (int step = 0; step < size - 1; ++step)
+    {
+
+        // loop to compare array elements
+        for (int i = 0; i < size - step - 1; ++i)
+        {
+
+            // compare two adjacent elements
+            // change > to < to sort in descending order
+            if (array[i] > array[i + 1])
+            {
+
+                // swapping occurs if elements
+                // are not in the intended order
+                int temp = array[i];
+                array[i] = array[i + 1];
+                array[i + 1] = temp;
+            }
+        }
+    }
+    return array;
+}
+
+
+// print array
+void printArray(int array[], int size)
+{
+    for (int i = 0; i < size; ++i)
+    {
+        printf("%d  ", array[i]);
+    }
+    printf("\n");
+}
+int main()
+{
+
+    int arr[7] = {1,2,7,3,8,4,9};
+    medianOfArray(7,arr);
     return 0;
 }
 // Question 6
