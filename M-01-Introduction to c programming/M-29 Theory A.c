@@ -1,6 +1,25 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
+// Question 7
+
+int medianOfArray(int arr[]){
+    int len = sizeof(arr) / sizeof(arr[0]);
+    if(len % 2 == 0){
+        printf("Array Size is even number:%d \n", len);
+    }else{
+        printf("Array Size is odd number:%d \n", len);
+    }
+}
+int main()
+{
+    int arr[100] = {5,6,9,5,3,6,1,2,9,2};
+
+    return 0;
+}
+// Question 6
+/*
 int factorial(int x)
 {
     int f = 1, i;
@@ -28,6 +47,7 @@ int main()
 
     return 0;
 }
+// Question 5
 /*
 int add_three_nums(int a, int b, int c)
 {
@@ -42,6 +62,7 @@ int main()
     return 0;
 }
 /*
+// Question 4
 int main()
 {
     int arr[10000];
@@ -78,6 +99,7 @@ int main()
     }
         printf("\nThe %dth element in this sequence is %d",target,arr[target-1]);
 }
+// Question 3
 /*
 void function(char *myString)
 {
@@ -101,6 +123,7 @@ void function(char *myString)
     printf("NO");
     }
 }
+// Question 2
 int main()
 {
     char s[100000];
