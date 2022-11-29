@@ -32,7 +32,6 @@ int main()
 {
     int x;
     scanf("%d",&x);
-    printf("x:%d\n",x);
     long long int a = factorial(x);
     printf("Factorial:%lld \n", a);
 
