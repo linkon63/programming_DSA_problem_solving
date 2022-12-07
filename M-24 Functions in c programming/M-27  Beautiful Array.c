@@ -64,13 +64,13 @@ int main()
 }
 
 
-//int arrOp(int *arr[100], int size)
-//{
+// int arrOp(int *arr[100], int size)
+// {
 //    int i;
-//
+
 //    for(i = 0; i < size; i++)
 //    {
 //        printf("%d ",arr[i]);
 //    }
 //    return 0;
-//}
+// }
