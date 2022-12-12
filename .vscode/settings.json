@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.scss": "scss",
-        "algorithm": "c"
+        "algorithm": "c",
+        "cstdlib": "c"
     }
 }
