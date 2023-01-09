@@ -1,0 +1,1 @@
+This value is from input file : 40
