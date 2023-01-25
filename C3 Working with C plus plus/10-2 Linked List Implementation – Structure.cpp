@@ -52,9 +52,20 @@ public:
         cout<<"\n";
     }
     // search for a single value
-    void SearchDistinctValue(int value)
+    int SearchDistinctValue(int value)
     {
+        node *a = head;
+        int index = 0;
+        while(a != NULL)
+        {
+            if(a->data == value){
+             return index;
+            }
+            a = a->nxt;
+            index++;
+        }
 
+        return -1;
     }
     // search all possible occurrence
     void SearchAllValue(int value)
