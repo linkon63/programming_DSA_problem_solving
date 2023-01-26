@@ -49,7 +49,7 @@ public:
             cout<<a->data<<" ";
             a = a->nxt;
         }
-        cout<<"\n";
+        cout<<"\n\n";
     }
     // search for a single value
     int SearchDistinctValue(int value)
@@ -58,19 +58,29 @@ public:
         int index = 0;
         while(a != NULL)
         {
-            if(a->data == value){
-             return index;
+            if(a->data == value)
+            {
+                return index;
             }
             a = a->nxt;
             index++;
         }
-
         return -1;
     }
     // search all possible occurrence
     void SearchAllValue(int value)
     {
-
+        node *a = head;
+        int index = 0;
+        while(a != NULL)
+        {
+            if(a->data == value)
+            {
+                cout<<"Index at :"<<index<<endl;
+            }
+            a = a->nxt;
+            index++;
+        }
     }
 };
 
@@ -78,13 +88,21 @@ int main()
 {
     LinkedList l;
     l.InsertAtHead(10);
+    // l.Traverse();
     l.InsertAtHead(30);
+    // l.Traverse();
     l.InsertAtHead(20);
+    // l.Traverse();
     l.InsertAtHead(30);
     l.Traverse();
 
     l.SearchDistinctValue(5);
+    // int ans = l.SearchDistinctValue(30);
+    // int ans = l.SearchAllValue(30);
+    cout<<"Found the index : "<<l.SearchDistinctValue(10)<<endl;
     l.SearchAllValue(30);
+
+
     return 0;
 }
 
