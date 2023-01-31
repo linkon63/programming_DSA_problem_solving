@@ -54,9 +54,35 @@ public:
         }
         cout<<"\n";
     }
+    // it will give the linkedlist size
     int getSize()
     {
         return sz;
+    }
+    // insert the given data at index
+    void InsertAtIndex(int index, int data)
+    {
+        if(index > sz) return;
+        if(index == 0)
+        {
+            InsertAtHead(data);
+            return;
+        }
+        int currentIndex = 0;
+        node * a = head;
+        while( a != currentIndex){
+            a = a->nxt;
+            currentIndex++;
+
+        }
+        // a  = currentIndex - 1
+        node *newNode = CreateNewNode(data);
+        newNode->nxt = a->nxt;
+        newNode->prv = a;
+        node *b = a->nxt;
+        b->prv = newNode;
+        a->nxt = newNode;
+        sz++;
     }
 };
 
@@ -67,6 +93,9 @@ int main()
     dl.InsertAtHead(20);
     dl.InsertAtHead(30);
     dl.InsertAtHead(40);
+    dl.Traverse();
+    cout<<"Size DL:"<<dl.getSize();
+    dl.InsertAtIndex(2,320;)
 
     dl.Traverse();
     cout<<"Size DL:"<<dl.getSize();
