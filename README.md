@@ -6,3 +6,4 @@
 # leet code
 # heacker rank 
 # code force ..
+# linked list
