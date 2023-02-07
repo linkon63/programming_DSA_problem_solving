@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 class node
@@ -19,20 +19,20 @@ public:
         head = NULL;
         sz = 0;
     }
-    // creates a new node with given data and return
+    // creates a new node with given data and return o(1)
     node *CreateNewNode(int data)
     {
         node *newNode = new node;
-        newNode-> data = data;
+        newNode->data = data;
         newNode->nxt = NULL;
         newNode->prv = NULL;
         return newNode;
     }
-    // insert node at head given  data;
+    // insert node at head given  data; o(1)
     void InsertAtHead(int data)
     {
         node *newNode = CreateNewNode(data);
-        if(head == NULL)
+        if (head == NULL)
         {
             sz++;
             head = newNode;
@@ -44,36 +44,38 @@ public:
         a->prv = newNode;
         head = newNode;
     }
+    // o(n)
     void Traverse()
     {
         node *a = head;
-        while(a !=NULL)
+        while (a != NULL)
         {
-            cout<<a->data<<" ";
+            cout << a->data << " ";
             a = a->nxt;
         }
-        cout<<"\n";
+        cout << "\n";
     }
-    // it will give the linkedlist size
+    // it will give the linkedlist size o(1)
     int getSize()
     {
         return sz;
     }
-    // insert the given data at index
+    // insert the given data at index o(n)
     void InsertAtIndex(int index, int data)
     {
-        if(index > sz) return;
-        if(index == 0)
+        if (index > sz)
+            return;
+        if (index == 0)
         {
             InsertAtHead(data);
             return;
         }
+        node *a = head;
         int currentIndex = 0;
-        node * a = head;
-        while( a != currentIndex){
+        while (currentIndex != index-1)
+        {
             a = a->nxt;
             currentIndex++;
-
         }
         // a  = currentIndex - 1
         node *newNode = CreateNewNode(data);
@@ -83,6 +85,52 @@ public:
         b->prv = newNode;
         a->nxt = newNode;
         sz++;
+    }
+    // delete the node from given index o(n)
+    void Delete(int index)
+    {
+        if (index > sz)
+            return;
+        node * a = head;
+        int currentIndex = 0;
+        while(currentIndex != index)
+        {
+            a = a->nxt;
+            currentIndex++;
+        }
+        node *b = a->prv;
+        node *c = a->nxt;
+        if(b!=NULL)
+        {
+            b->nxt = c;
+        }
+        if(c!=NULL)
+        {
+            c->prv = b;
+        }
+        delete a;
+        if(index == 0)
+        {
+            head = c;
+        }
+        sz--;
+    }
+    // reverse o(2*n) = o(n)
+    void Reverse(){
+        if(head == NULL) return;
+        node *a = head;
+        int currentIndex = 0;
+        while(currentIndex !=sz-1){
+            a= a->nxt;
+            currentIndex++;
+        }
+        // last index is in a
+        node *b = head;
+        while(b!=NULL){
+            swap(b->nxt, b->prv);
+            b = b->prv;
+        }
+        head = a;
     }
 };
 
@@ -94,10 +142,18 @@ int main()
     dl.InsertAtHead(30);
     dl.InsertAtHead(40);
     dl.Traverse();
-    cout<<"Size DL:"<<dl.getSize();
-    dl.InsertAtIndex(2,320;)
-
+    cout << "Size DL:" << dl.getSize()<<endl;
+    dl.InsertAtIndex(2, 320);
     dl.Traverse();
-    cout<<"Size DL:"<<dl.getSize();
+    cout << "Size DL:" << dl.getSize()<<endl;
+    // cout << "Size DL:" << dl.getSize();
+
+    dl.Delete(2);
+    dl.Traverse();
+    cout << "Size DL:" << dl.getSize()<<endl;
+
+    dl.Reverse();
+    dl.Traverse();
+
     return 0;
 }
