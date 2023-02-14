@@ -18,12 +18,11 @@ int main()
         }
         else
         {
-            if(st.empty() )
+            if(st.empty())
             {
-                cout<<"invalid\n";
+                cout<<"invalid from Loops\n";
                 return 0;
             }
-
             if(now == ')' && st.top() == '(')
             {
                 st.pop();
@@ -38,21 +37,21 @@ int main()
             }
             else
             {
-                cout<<"invalid\n";
+                cout<<"invalid ..\n";
                 return 0;
             }
         }
 
     }
 
-    if(st.size())
+    if(st.empty())
     {
         cout<<"Valid\n";
     }
     else
     {
 
-        cout<<"invalid\n";
+        cout<<"invalid ...\n";
     }
     return 0;
 }
