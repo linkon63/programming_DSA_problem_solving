@@ -11,14 +11,14 @@ int main()
 
     for(int i = 0; i<s.size(); i++)
     {
-        char now = s[i];
+            now = s[i];
         if(now =='(' || now == '{' || now == '[')
         {
             st.push(now);
         }
         else
         {
-            if(st.empty() )
+        if(st.empty() )
             {
                 cout<<"invalid\n";
                 return 0;
