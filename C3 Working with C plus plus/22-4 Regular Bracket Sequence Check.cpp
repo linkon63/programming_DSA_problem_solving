@@ -5,53 +5,52 @@ using namespace std;
 int main()
 {
     string s;
-    cin>>s;
+    cin >> s;
 
-    stack <char> st;
+    stack<char> st;
 
-    for(int i = 0; i<s.size(); i++)
+    for (int i = 0; i < s.size(); i++)
     {
         char now = s[i];
-        if(now =='(' || now == '{' || now == '[')
+        if (now == '(' || now == '{' || now == '[')
         {
             st.push(now);
         }
         else
         {
-            if(st.empty())
+            if (st.empty())
             {
-                cout<<"invalid from Loops\n";
+                cout << "invalid from Loops\n";
                 return 0;
             }
-            if(now == ')' && st.top() == '(')
+            if (now == ')' && st.top() == '(')
             {
                 st.pop();
             }
-            else if(now == '}' && st.top() == '{')
+            else if (now == '}' && st.top() == '{')
             {
                 st.pop();
             }
-            else if(now == ']' && st.top() == '[')
+            else if (now == ']' && st.top() == '[')
             {
                 st.pop();
             }
             else
             {
-                cout<<"invalid ..\n";
+                cout << "invalid ..\n";
                 return 0;
             }
         }
-
     }
 
-    if(st.empty())
+    if (st.empty())
     {
-        cout<<"Valid\n";
+        cout << "Valid\n";
     }
     else
     {
 
-        cout<<"invalid ...\n";
+        cout << "invalid ...\n";
     }
     return 0;
 }
