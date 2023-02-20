@@ -16,7 +16,6 @@ class BinaryTree
 {
 public:
     node* root;
-    node* allnode[6];
 
     BinaryTree()
     {
@@ -34,7 +33,7 @@ public:
     }
     void build_binary_tree()
     {
-//        node* allnode = [6];
+        node* allnode[6];
         for(int i = 0; i<6; i++)
         {
             allnode[i] = CreateNewNote(i);
@@ -52,40 +51,84 @@ public:
 
         allnode[5]->parent = allnode[1];
 
-        allnode[3]->parent = allnode[2];        allnode[4]->parent = allnode[2];
+        allnode[3]->parent = allnode[2];
+        allnode[4]->parent = allnode[2];
         root = allnode[0];
     }
 
-    void print_tree_info(){
-        for(int i = 0; i<6; i++){
-            int p = -1;
-            int l = -1;
-            int r = -1;
+//    void print_tree_info(){
+//        for(int i = 0; i<6; i++){
+//            int p = -1;
+//            int l = -1;
+//            int r = -1;
+//
+//            if(allnode[i]->parent != NULL){
+//                p = allnode[i]->parent->id;
+//            }
+//
+//            if(allnode[i]->Left != NULL){
+//                l = allnode[i]->Left->id;
+//            }
+//
+//            if(allnode[i]->Right != NULL){
+//                r = allnode[i]->Right->id;
+//            }
+//
+//            cout<<"Node "<<i<<" : Parent = "<<p<<" , Left child = "<<l<<" , Right child = "<<r<<endl;
+//        }
+//    }
 
-            if(allnode[i]->parent != NULL){
-                p = allnode[i]->parent->id;
+    void BFS()
+    {
+        queue<node*> q;
+        q.push(root);
+
+        while(!q.empty())
+        {
+            node* a = q.front();
+            q.pop();
+
+            int p = -1, l = -1, r = -1;
+            if(a->Left != NULL)
+            {
+                l = a->Left->id;
+                q.push(a->Left);
             }
-
-            if(allnode[i]->Left != NULL){
-                l = allnode[i]->Left->id;
+            if(a->Right != NULL)
+            {
+                r = a->Right->id;
+                q.push(a->Right);
             }
-
-            if(allnode[i]->Right != NULL){
-                r = allnode[i]->Right->id;
+            if(a->parent != NULL)
+            {
+                p = a->parent->id;
             }
+            cout<<"Node id = "<<a->id<<" Left Child = "<<l;
+            cout<<" Right Child = "<<r<<" Parent id = "<<p<<endl;
 
-            cout<<"Node "<<i<<" : Parent = "<<p<<" , Left child = "<<l<<" , Right child = "<<r<<endl;
         }
     }
+
+    void DFS(node* a){
+        if(a == NULL){
+            return;
+        }
+        cout<<a->id<<" ";
+        DFS(a->Left);
+        DFS(a->Right);
+    }
+
 
 };
 
 int main()
 {
     BinaryTree bt;
-
     bt.build_binary_tree();
-    bt.print_tree_info();
+    bt.DFS(bt.root);
+//    bt.BFS();
+//    bt.build_binary_tree();
+//    bt.print_tree_info();
 
     return 0;
 }
