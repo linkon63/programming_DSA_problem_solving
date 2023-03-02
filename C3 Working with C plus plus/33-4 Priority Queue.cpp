@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -74,7 +75,7 @@ public:
         nodes.pop_back();
         down_hepify(idx);
     }
-   //o(1)
+    //o(1)
     int getMax()
     {
         if(nodes.empty())
@@ -96,27 +97,67 @@ public:
         Delete(0);
         return ret;
     }
+    void build_from_array(vector<int>&a)
+    {
+        nodes = a;
+        int n = nodes.size();
+        int last_non_leaf = n/2 - 1;
+        for(int i = last_non_leaf; i>=0; i--)
+        {
+            down_hepify(i);
+        }
+    }
 
+    int size()
+    {
+        return nodes.size();
+    }
+
+};
+
+
+class PriorityQueue
+{
+public:
+    MaxHeap h;
+    PriorityQueue()
+    {
+
+    }
+
+    void push(int x){
+        h.insert(x);
+    }
+
+    void pop(){
+        h.Delete(0);
+    }
+
+    void top(){
+        return h.getMax();
+    }
+
+    int size(){
+    return h.size();
+    }
 
 };
 
 int main()
 {
-    MaxHeap heap;
-    heap.insert(4);
-    heap.insert(7);
-    heap.insert(9);
-    heap.insert(1);
-    heap.insert(10);
+    PriorityQueue pq;
+    pq.push(5);
+    pq.push(7);
+    pq.push(10);
+    pq.push(1);
+    pq.push(2);
 
-    cout<<"Max element = "<<heap.getMax()<<"\n";
-    //heap.PrintHeap();
-    //heap.Delete(0);
 
-    //heap.PrintHeap();
-    cout<<"Max element = "<<heap.ExtractMax()<<"\n";
-    cout<<"Max element = "<<heap.ExtractMax()<<"\n";
+    while(pq.size()){
 
-    heap.PrintHeap();
+        cout<<pq.top()<<" ";
+        pq.pop();
+    }
+
     return 0;
 }
