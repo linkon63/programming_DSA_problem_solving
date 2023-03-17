@@ -21,9 +21,9 @@ int main() {
     std::string s;
     std::cin >> s;
     if (isPalindrome(s)) {
-        std::cout << s << "Yes" << std::endl;
+        std::cout <<"Yes" << std::endl;
     } else {
-        std::cout << s << "No" << std::endl;
+        std::cout <<"No" << std::endl;
     }
     return 0;
 }
